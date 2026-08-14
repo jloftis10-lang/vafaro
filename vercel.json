@@ -9,6 +9,12 @@
     },
     "api/contact.ts": {
       "maxDuration": 20
+    },
+    "api/review-offer.ts": {
+      "maxDuration": 20
+    },
+    "api/stripe-webhook.ts": {
+      "maxDuration": 20
     }
   }
 }

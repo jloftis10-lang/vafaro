@@ -7,6 +7,7 @@ import "./articles.css";
 import "./footer.css";
 import "./results.css";
 import "./pilot.css";
+import "./offer.css";
 
 const sans = DM_Sans({ subsets: ["latin"], variable: "--font-sans" });
 const serif = Instrument_Serif({
