@@ -139,7 +139,7 @@ export default function Home() {
         <Link className="button" href="/check">Start a free trip check <ArrowRight size={18} /></Link>
       </section>
 
-      <footer className="footer shell"><Link className="brand" href="/"><span className="brand-mark"><Compass size={20} weight="fill" /></span>vafaro</Link><div className="footer-links"><Link href="/shore-excursion-fit-check">Shore excursion check</Link><Link href="/guides/traveling-with-aging-parents">Aging parents guide</Link><Link href="/methodology">Methodology</Link><Link href="/contact">Contact</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div><span>© 2026 Vafaro</span></footer>
+      <footer className="footer shell"><Link className="brand" href="/"><span className="brand-mark"><Compass size={20} weight="fill" /></span>vafaro</Link><div className="footer-links"><Link href="/shore-excursion-fit-check">Shore excursion check</Link><Link href="/excursions">Excursion library</Link><Link href="/guides/traveling-with-aging-parents">Aging parents guide</Link><Link href="/methodology">Methodology</Link><Link href="/contact">Contact</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div><span>© 2026 Vafaro</span></footer>
     </main>
   );
 }
