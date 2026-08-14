@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, CheckCircle, Compass, Info, SealCheck, Warning } from "@phosphor-icons/react/dist/ssr";
+
+export const metadata: Metadata = {
+  title: "Sample Multigenerational Trip Fit Report",
+  description: "Explore a sample Vafaro itinerary review with family-fit findings, practical corrections, confidence labels, and unknowns.",
+  alternates: { canonical: "/report" },
+};
 
 export default function ReportPage() {
   return <main className="report-page">

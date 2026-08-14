@@ -2,8 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
   "outputDirectory": "out",
+  "cleanUrls": true,
   "functions": {
     "api/leads.ts": {
+      "maxDuration": 10
+    },
+    "api/contact.ts": {
       "maxDuration": 10
     }
   }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { track } from "@vercel/analytics";
 import { ArrowRight, CheckCircle, Compass, Copy, Info, SealCheck, Warning } from "@phosphor-icons/react";
 import { decodeReport } from "@/lib/assessment";
 
@@ -40,6 +41,7 @@ export function ResultsClient() {
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
+      track("trip_report_shared");
     } catch {
       setCopied(false);
     }
@@ -47,6 +49,7 @@ export function ResultsClient() {
 
   const capture = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    track("review_application_started", { price: priceInterest, timeframe });
     setCaptureState("submitting");
     setCaptureMessage("");
 
@@ -69,8 +72,10 @@ export function ResultsClient() {
       if (!response.ok) throw new Error(result.error || "We could not save your request.");
 
       localStorage.setItem("vafaro-founding-lead-v1", JSON.stringify({ email, leadId: result.leadId, submittedAt: new Date().toISOString() }));
+      track("review_application_submitted", { price: priceInterest, timeframe });
       setCaptureState("success");
     } catch (error) {
+      track("review_application_failed", { price: priceInterest, timeframe });
       setCaptureState("error");
       setCaptureMessage(error instanceof Error ? error.message : "We could not save your request. Please try again.");
     }
@@ -100,10 +105,10 @@ export function ResultsClient() {
                 <label><span>Name</span><input required autoComplete="name" value={name} onChange={event => setName(event.target.value)} placeholder="Your name" /></label>
                 <label><span>Email</span><input required type="email" autoComplete="email" value={email} onChange={event => setEmail(event.target.value)} placeholder="you@example.com" /></label>
                 <label><span>When is the trip?</span><select value={timeframe} onChange={event => setTimeframe(event.target.value)}>{timeframes.map(item => <option key={item}>{item}</option>)}</select></label>
-                <label><span>Price you’d consider</span><select value={priceInterest} onChange={event => setPriceInterest(Number(event.target.value))}><option value={79}>$79</option><option value={119}>$119</option><option value={149}>$149</option></select></label>
+                <label><span>Price you’d consider</span><select value={priceInterest} onChange={event => { const price=Number(event.target.value); setPriceInterest(price); track("review_price_selected", { price }); }}><option value={79}>$79</option><option value={119}>$119</option><option value={149}>$149</option></select></label>
               </div>
               <label className="form-trap" aria-hidden="true">Company<input tabIndex={-1} autoComplete="off" value={company} onChange={event => setCompany(event.target.value)} /></label>
-              <label className="consent-field"><input required type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} /><span>I agree that Vafaro may store this trip profile and contact me about a founding-family review. I understand this is a planning service, not medical advice or an accessibility guarantee.</span></label>
+              <label className="consent-field"><input required type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} /><span>I agree that Vafaro may store this trip profile and contact me about a founding-family review under the <Link href="/privacy">Privacy Policy</Link>. I understand this is a planning service, not medical advice or an accessibility guarantee.</span></label>
               <p className="data-note">Please don’t include diagnoses, passport numbers, payment details, or other sensitive information in your trip description.</p>
               {captureState === "error" ? <p className="capture-error" role="alert">{captureMessage}</p> : null}
               <button className="button" disabled={captureState === "submitting"}>{captureState === "submitting" ? "Saving securely…" : "Submit my application"} <ArrowRight size={16} /></button>

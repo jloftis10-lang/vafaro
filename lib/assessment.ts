@@ -34,12 +34,21 @@ export type TripReport = {
 
 export function generateReport(input: TripInput): TripReport {
   const text = input.description.toLowerCase();
+  const isShoreExcursion = /\b(cruise|shore excursion|excursion|port day|tender)\b/.test(text);
   const findings: Finding[] = [];
   let score = 92;
 
   if (input.needs.includes("Easy walking") || input.walkingHours <= 2) {
     score -= 12;
     findings.push({ level:"high", title:"Daily walking needs a closer look", detail:"This group prefers shorter walking windows. Door-to-door distance, queues, and uneven ground can make a light-looking day considerably harder.", action:"Keep one principal activity per day and verify the complete walking route.", confidence:"Based on your profile" });
+  }
+  if (isShoreExcursion) {
+    score -= 6;
+    findings.push({ level:"check", title:"The activity label needs real-world detail", detail:"Easy, moderate, and demanding labels are broad. Total duration can hide motorcoach steps, long standing periods, guide pace, uneven surfaces, and the walk between the ship and transportation.", action:"Confirm walking and standing minutes, terrain, steps, seating, vehicle boarding, and mobility-aid rules for this exact excursion.", confidence:"Official source needed" });
+  }
+  if (text.includes("tender")) {
+    score -= 9;
+    findings.push({ level:"check", title:"Tendering adds a separate transfer", detail:"A tender port can require queues, steps between moving vessels, and additional standing before the excursion begins. Operation may vary with ship, weather, sea conditions, and local procedures.", action:"Confirm the ship-specific tender process and count it as part of the day’s physical load.", confidence:"Official source needed" });
   }
   if (input.needs.includes("Step-free access")) {
     score -= 9;
@@ -60,7 +69,11 @@ export function generateReport(input: TripInput): TripReport {
   findings.push({ level:"good", title:"Your group profile is a strong start", detail:"You have surfaced preferences that generic itinerary tools usually miss.", action:"Save this profile and reuse it when comparing future trips.", confidence:"Based on your profile" });
   const safeScore = Math.max(48, Math.min(96, score));
   const place = input.description.match(/\b(?:to|in|visiting)\s+([A-Z][A-Za-zÀ-ÿ]*(?:\s+[A-Z][A-Za-zÀ-ÿ]*){0,2})(?=\s+(?:with|for|and|from|during)\b|[,.]|$)/)?.[1]?.trim();
-  const unknowns = [
+  const unknowns = isShoreExcursion ? [
+    "Exact walking and standing time for this tour route",
+    "Current tender, pier, vehicle, terrain, and step details",
+    "Live weather, operator, guide pace, and port-operation changes",
+  ] : [
     "Exact door-to-door walking distance and terrain",
     "Current step-free access at hotels, stations, and attractions",
     "Live wait times, weather, closures, and transportation changes",

@@ -1,0 +1,16 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Compass } from "@phosphor-icons/react/dist/ssr";
+
+export const metadata: Metadata = { title: "Privacy Policy", description: "How Vafaro collects, uses, stores, and protects information.", alternates: { canonical: "/privacy" } };
+
+export default function PrivacyPage() {
+  return <main className="article-page"><header className="nav shell"><Link className="brand" href="/"><span className="brand-mark"><Compass size={20} weight="fill" /></span>vafaro</Link></header><article className="article-shell legal-copy"><p className="section-kicker">PRIVACY POLICY</p><h1>Clear information about your information.</h1><p className="article-lead">Effective August 13, 2026. Vafaro collects only the information needed to provide the early trip-check experience, evaluate review applications, respond to messages, and operate the website.</p>
+    <section><h2>Information we collect</h2><p>The free scan stores the family profile and report in your browser. Vafaro receives that trip profile only if you submit a founding-family application. An application may include your name, email, trip timeframe, price interest, and the trip information attached to the report. The contact form collects your name, email, topic, and message.</p><p>Our hosting and security systems may process technical information such as browser type, pages viewed, approximate location, and IP address. Contact and application endpoints store a one-way hash of the requesting IP address for rate limiting rather than the raw address.</p></section>
+    <section><h2>How we use information</h2><p>We use information to provide the website, evaluate and respond to applications and messages, prevent abuse, understand aggregate product usage, improve Vafaro, and meet legal obligations. Do not submit diagnoses, medical records, passport numbers, payment details, or other sensitive information.</p></section>
+    <section><h2>Service providers and sharing</h2><p>Vafaro uses service providers including Vercel for hosting and privacy-focused website analytics, and Neon for database storage. These providers process information to operate their services for Vafaro. We do not sell personal information or use trip profiles for targeted advertising.</p></section>
+    <section><h2>Retention and security</h2><p>We keep information only as long as reasonably necessary for the purposes described here, security, recordkeeping, and legal obligations. No online system can guarantee absolute security, but we use encrypted connections, restricted server-side database credentials, input limits, abuse controls, and data minimization.</p></section>
+    <section><h2>Your choices</h2><p>You can clear locally stored scan data through your browser settings. You may ask to access, correct, or delete information submitted to Vafaro. Select “Privacy request” on our <Link className="inline-link" href="/contact">contact form</Link>. We may need to verify your identity before completing a request.</p></section>
+    <section><h2>Children and changes</h2><p>Vafaro is intended for adults planning travel and is not directed to children under 13. Please do not submit a child’s contact information. We may update this policy as the service changes and will revise the effective date when we do.</p></section>
+  </article></main>;
+}

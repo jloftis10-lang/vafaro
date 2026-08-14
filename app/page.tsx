@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -17,6 +18,8 @@ const friction = [
   { icon: Timer, label: "Pacing", text: "Recovery time, rest windows, and rushed connections." },
   { icon: Thermometer, label: "Conditions", text: "Heat, crowds, noise, and weather exposure." },
 ];
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default function Home() {
   return (
@@ -64,6 +67,11 @@ export default function Home() {
             <div className="finding good"><span>PROFILE MATCH</span><strong>Hotel location</strong><p>Central base; access unverified</p></div>
           </div>
         </div>
+      </section>
+
+      <section className="pilot-strip shell" aria-labelledby="cruise-pilot-heading">
+        <div><p className="section-kicker">NEW SHORE EXCURSION PILOT</p><h2 id="cruise-pilot-heading">Cruising with an older parent?</h2><p>Check one named shore excursion against their comfortable walking, standing, stairs, terrain, and pace before you reserve it.</p></div>
+        <Link className="button" href="/shore-excursion-fit-check">Explore the excursion check <ArrowRight size={17}/></Link>
       </section>
 
       <section className="intro shell" id="how">
@@ -131,7 +139,7 @@ export default function Home() {
         <Link className="button" href="/check">Start a free trip check <ArrowRight size={18} /></Link>
       </section>
 
-      <footer className="footer shell"><Link className="brand" href="/"><span className="brand-mark"><Compass size={20} weight="fill" /></span>vafaro</Link><div className="footer-links"><Link href="/guides/traveling-with-aging-parents">Traveling with aging parents</Link><Link href="/guides/rome-with-aging-parents">Rome guide</Link><Link href="/methodology">Methodology</Link></div><span>© 2026 Vafaro</span></footer>
+      <footer className="footer shell"><Link className="brand" href="/"><span className="brand-mark"><Compass size={20} weight="fill" /></span>vafaro</Link><div className="footer-links"><Link href="/shore-excursion-fit-check">Shore excursion check</Link><Link href="/guides/traveling-with-aging-parents">Aging parents guide</Link><Link href="/methodology">Methodology</Link><Link href="/contact">Contact</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></div><span>© 2026 Vafaro</span></footer>
     </main>
   );
 }
