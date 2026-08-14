@@ -1,0 +1,17 @@
+"use client";
+import Link from "next/link";
+import { FormEvent, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { ArrowRight, CheckCircle, Compass, Copy, Info, SealCheck, Warning } from "@phosphor-icons/react";
+import { decodeReport } from "@/lib/assessment";
+
+const icons={high:Warning,check:Info,good:CheckCircle};
+export function ResultsClient(){
+  const params=useSearchParams();
+  const report=useMemo(()=>decodeReport(params.get("r")??""),[params]);
+  const [copied,setCopied]=useState(false); const [email,setEmail]=useState(""); const [saved,setSaved]=useState(false);
+  if(!report)return <main className="results-empty"><h1>We couldn’t open this report.</h1><Link className="button" href="/check">Start a new check</Link></main>;
+  const share=async()=>{await navigator.clipboard.writeText(window.location.href);setCopied(true)};
+  const capture=(event:FormEvent)=>{event.preventDefault();localStorage.setItem("vafaro-email",email);setSaved(true)};
+  return <main className="results-page"><header className="nav shell"><Link className="brand" href="/"><span className="brand-mark"><Compass size={20} weight="fill"/></span>vafaro</Link><button className="share-button" onClick={share}><Copy size={16}/>{copied?"Link copied":"Share report"}</button></header><section className="results-hero shell"><div><p className="section-kicker">YOUR FREE TRIP FIT SCAN</p><h1>{report.title}</h1><p className="results-summary">{report.summary}</p></div><div className="result-score"><strong>{report.score}</strong><span>TRIP FIT<br/>OUT OF 100</span></div></section><section className="result-layout shell"><aside><p>PROFILE CHECKED</p>{report.input.companions.map(item=><span key={item}>✓ {item}</span>)}{report.input.needs.map(item=><span key={item}>✓ {item}</span>)}</aside><div className="result-main"><p className="section-kicker">WHAT TO KNOW BEFORE YOU BOOK</p>{report.findings.slice(0,3).map((finding,index)=>{const Icon=icons[finding.level];return <article className={`live-finding ${finding.level}`} key={finding.title}><span className="finding-number">0{index+1}</span><Icon size={24} weight="fill"/><div><p>{finding.level==="high"?"HIGH FRICTION":finding.level==="good"?"STRONG FIT":"CHECK THIS"}</p><h2>{finding.title}</h2><span>{finding.detail}</span><div className="action"><strong>VAFARO SUGGESTS</strong>{finding.action}</div><small>{finding.confidence}</small></div></article>})}<section className="email-capture"><SealCheck size={30} weight="fill"/><div><h2>{saved?"Your report is saved.":"Keep this report and your traveler profile"}</h2><p>{saved?"We’ll use this address when account-based reports become available.":"Email yourself the report and be first to access complete day-by-day analysis."}</p>{!saved&&<form onSubmit={capture}><input required type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com" aria-label="Email address"/><button className="button">Save my report <ArrowRight size={16}/></button></form>}</div></section><section className="upgrade-card"><p>COMPLETE TRIP FIT REPORT · $39</p><h2>See every difficult day—not just the first three flags.</h2><ul><li>Day-by-day energy curve</li><li>Walking and transfer analysis</li><li>Specific itinerary corrections</li><li>Printable, shareable family report</li></ul><button className="button">Unlock the complete report <ArrowRight size={17}/></button></section></div></section></main>;
+}
