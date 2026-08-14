@@ -14,6 +14,12 @@ export type Finding = {
   confidence: "AI estimate" | "Official source needed" | "Based on your profile";
 };
 
+export type ConfidenceSummary = {
+  profileBased: number;
+  estimated: number;
+  needsVerification: number;
+};
+
 export type TripReport = {
   id: string;
   title: string;
@@ -22,6 +28,8 @@ export type TripReport = {
   createdAt: string;
   input: TripInput;
   findings: Finding[];
+  unknowns?: string[];
+  confidence?: ConfidenceSummary;
 };
 
 export function generateReport(input: TripInput): TripReport {
@@ -49,21 +57,27 @@ export function generateReport(input: TripInput): TripReport {
     score -= 5;
     findings.push({ level:"check", title:"Children need an exit plan", detail:"Timed activities work better when meals, bathrooms, naps, and an easy return to lodging are visible in the plan.", action:"Add one flexible break and one weather-proof backup each day.", confidence:"Based on your profile" });
   }
-  if (text.includes("pet") || text.includes("dog") || text.includes("cat")) {
-    score -= 8;
-    findings.push({ level:"high", title:"Pet policies require itinerary-level verification", detail:"Airline, lodging, destination, and return-entry rules can differ by animal, size, route, and travel history.", action:"Verify every carrier and government requirement before purchasing nonrefundable travel.", confidence:"Official source needed" });
-  }
-
   findings.push({ level:"good", title:"Your group profile is a strong start", detail:"You have surfaced preferences that generic itinerary tools usually miss.", action:"Save this profile and reuse it when comparing future trips.", confidence:"Based on your profile" });
   const safeScore = Math.max(48, Math.min(96, score));
-  const place = input.description.match(/(?:to|in|visit(?:ing)?)\s+([A-Z][A-Za-zÀ-ÿ\s]{2,24})/)?.[1]?.trim();
+  const place = input.description.match(/\b(?:to|in|visiting)\s+([A-Z][A-Za-zÀ-ÿ]*(?:\s+[A-Z][A-Za-zÀ-ÿ]*){0,2})(?=\s+(?:with|for|and|from|during)\b|[,.]|$)/)?.[1]?.trim();
+  const unknowns = [
+    "Exact door-to-door walking distance and terrain",
+    "Current step-free access at hotels, stations, and attractions",
+    "Live wait times, weather, closures, and transportation changes",
+  ];
+  const confidence = findings.reduce<ConfidenceSummary>((summary, finding) => {
+    if (finding.confidence === "Based on your profile") summary.profileBased += 1;
+    if (finding.confidence === "AI estimate") summary.estimated += 1;
+    if (finding.confidence === "Official source needed") summary.needsVerification += 1;
+    return summary;
+  }, { profileBased: 0, estimated: 0, needsVerification: 0 });
 
   return {
     id: `vf-${Date.now().toString(36)}`,
     title: place ? `${place} trip check` : "Your Trip Fit check",
     score: safeScore,
     summary: safeScore >= 80 ? "A strong fit with a few details to verify." : safeScore >= 65 ? "A promising trip with friction worth correcting." : "This trip needs adjustment before you commit.",
-    createdAt: new Date().toISOString(), input, findings,
+    createdAt: new Date().toISOString(), input, findings, unknowns, confidence,
   };
 }
 

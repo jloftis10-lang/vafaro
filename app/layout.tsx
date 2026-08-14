@@ -15,10 +15,10 @@ const serif = Instrument_Serif({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://vafaro.com"),
-  title: { default: "Vafaro — Trip Fit Reports for Multigenerational Travel", template: "%s | Vafaro" },
+  title: { default: "Vafaro — Multigenerational Family Trip Planner", template: "%s | Vafaro" },
   description:
     "Check any travel itinerary for walking, stairs, pacing, transfers, accessibility, and hidden friction. Built for multigenerational trips and travel with aging parents.",
-  keywords: ["multigenerational travel planning", "travel with aging parents", "trip accessibility checker", "travel itinerary review", "senior friendly travel", "family trip planner", "accessible travel planning"],
+  keywords: ["multigenerational family travel", "multigenerational trip planner", "traveling with aging parents", "senior friendly family vacations", "family travel itinerary", "family trip planner", "accessible family travel"],
   alternates: { canonical: "/" },
   openGraph: { title: "Vafaro — Know before you go", description: "Upload any itinerary. See whether the trip actually fits the people taking it.", url: "https://vafaro.com", siteName: "Vafaro", type: "website" },
   twitter: { card: "summary_large_image", title: "Vafaro — Trip Fit Reports", description: "Beautiful plans. Real-world checked." },
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body className={`${sans.variable} ${serif.variable}`}>{children}</body>
     </html>
   );

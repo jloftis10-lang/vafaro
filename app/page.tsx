@@ -21,7 +21,7 @@ const friction = [
 export default function Home() {
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context":"https://schema.org", "@type":"Service", name:"Vafaro Trip Fit Report", provider:{"@type":"Organization",name:"Vafaro",url:"https://vafaro.com"}, description:"AI-assisted and human-reviewed travel itinerary analysis for multigenerational families.", areaServed:"Worldwide", offers:[{"@type":"Offer",name:"Quick Scan",price:"0",priceCurrency:"USD"},{"@type":"Offer",name:"Detailed Trip Fit Report",price:"29",priceCurrency:"USD"}] }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context":"https://schema.org", "@type":"Service", name:"Vafaro Family Trip Fit Review", provider:{"@type":"Organization",name:"Vafaro",url:"https://vafaro.com"}, audience:{"@type":"Audience",audienceType:"Families planning multigenerational travel"}, description:"AI-assisted itinerary screening and optional human review for multigenerational family trips with children and aging parents.", areaServed:"Worldwide", offers:[{"@type":"Offer",name:"Family Trip Quick Scan",price:"0",priceCurrency:"USD"}] }) }} />
       <header className="nav shell">
         <Link className="brand" href="/" aria-label="Vafaro home">
           <span className="brand-mark"><Compass size={20} weight="fill" /></span>
@@ -39,29 +39,29 @@ export default function Home() {
       <section className="hero shell">
         <div className="eyebrow"><Sparkle size={14} weight="fill" /> Travel that fits real people</div>
         <h1>Know before<br />you <em>go.</em></h1>
-        <p className="hero-copy">Upload any itinerary. Get a Trip Fit Report showing what the experience will actually demand—walking, stairs, pace, heat, transfers, and more.</p>
+        <p className="hero-copy">Planning a family trip with kids, parents, or grandparents? Check whether the itinerary’s walking, stairs, pace, heat, and transfers fit the people you love.</p>
         <div className="hero-actions">
           <Link className="button" href="/check">Check your trip <ArrowRight size={18} /></Link>
           <Link className="text-link" href="/report">Explore a sample report <span>↗</span></Link>
         </div>
         <div className="trust-line">
           <div className="avatars"><span>MC</span><span>AR</span><span>JL</span></div>
-          <p><strong>AI-assisted. Human-checkable.</strong><br />Critical details never hide behind a confidence score.</p>
+          <p><strong>AI-assisted. Uncertainty shown.</strong><br />Every result separates what we know, estimate, and still need to verify.</p>
         </div>
 
         <div className="report-preview" aria-label="Sample trip fit score">
           <div className="preview-top">
             <div><span className="tiny-label">TRIP FIT REPORT</span><h2>Rome with the family</h2><p>6 travelers · 8 days · October</p></div>
-            <span className="verified"><SealCheck size={16} weight="fill" /> Human reviewed</span>
+            <span className="verified"><SealCheck size={16} weight="fill" /> Illustrative sample</span>
           </div>
           <div className="score-row">
-            <div className="score-ring"><span>72</span><small>/ 100</small></div>
-            <div className="score-copy"><span className="rating-dot" /> GOOD FIT, WITH A FEW CHANGES<h3>Your hotel choice works beautifully. Your first two days don’t.</h3><p>We found one high-friction day and a connection that needs more breathing room.</p></div>
+            <div className="score-ring"><span>72</span><small>SIGNAL</small></div>
+            <div className="score-copy"><span className="rating-dot" /> PROMISING, WITH CHANGES<h3>Your hotel looks promising. Your first two days don’t.</h3><p>The sample shows one high-friction day and one connection that needs direct verification.</p></div>
           </div>
           <div className="finding-grid">
             <div className="finding risk"><span>HIGH FRICTION</span><strong>5.2 miles on day one</strong><p>Following an overnight flight</p></div>
             <div className="finding caution"><span>CHECK THIS</span><strong>18-minute rail transfer</strong><p>With luggage and platform change</p></div>
-            <div className="finding good"><span>STRONG FIT</span><strong>Hotel location</strong><p>Flat approach, lift confirmed</p></div>
+            <div className="finding good"><span>PROFILE MATCH</span><strong>Hotel location</strong><p>Central base; access unverified</p></div>
           </div>
         </div>
       </section>
@@ -77,6 +77,19 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="failure-section" aria-labelledby="failure-heading">
+        <div className="shell">
+          <p className="section-kicker light">THE DETAILS THAT BREAK GOOD TRIPS</p>
+          <div className="failure-heading"><h2 id="failure-heading">The itinerary can look perfect and still fail the family.</h2><p>Vafaro is designed around common, preventable failure modes—not generic destination inspiration.</p></div>
+          <div className="failure-grid">
+            <article><span>01</span><p>THE VILLA</p><h3>“Accessible” bedrooms—behind 14 entrance steps.</h3><small>Listing language is not the same as a verified step-free route.</small></article>
+            <article><span>02</span><p>THE CONNECTION</p><h3>An 18-minute train change with luggage and a platform switch.</h3><small>A valid ticket can still create an unrealistic transfer for three generations.</small></article>
+            <article><span>03</span><p>THE FIRST DAY</p><h3>Five walking miles after an overnight family flight.</h3><small>Attractions fit the calendar while recovery, queues, and the walk home do not.</small></article>
+          </div>
+          <p className="failure-note">These are illustrative composites of common planning problems, not customer testimonials.</p>
+        </div>
+      </section>
+
       <section className="steps" id="review">
         <div className="shell">
           <p className="section-kicker light">HOW IT WORKS</p>
@@ -85,7 +98,7 @@ export default function Home() {
             <article><span>1</span><div><h3>Share the real travelers</h3><p>Tell us who is coming, how they like to move, and what can make or break the trip.</p></div></article>
             <article><span>2</span><div><h3>Add your trip</h3><p>Paste an itinerary, share booking links, or describe the trip you are considering.</p></div></article>
             <article><span>3</span><div><h3>See the hidden friction</h3><p>Vafaro checks pace, transitions, access, conditions, and the fit between every day and every traveler.</p></div></article>
-            <article><span>4</span><div><h3>Ask for a human check</h3><p>A specialist can verify critical details directly and recommend practical corrections.</p></div></article>
+            <article><span>4</span><div><h3>Request a founding-family review</h3><p>A person investigates priority unknowns, documents sources, and suggests practical corrections. Scope is confirmed before payment.</p></div></article>
           </div>
         </div>
       </section>
@@ -104,13 +117,12 @@ export default function Home() {
       </section>
 
       <section className="pricing shell" id="pricing">
-        <div className="pricing-head"><div><p className="section-kicker">START WITH CLARITY</p><h2>See the friction.<br /><em>Choose your confidence.</em></h2></div><p>Every trip starts with a free quick scan. Pay only when you want deeper analysis or a real person to verify the details.</p></div>
+        <div className="pricing-head"><div><p className="section-kicker">FOUNDING-FAMILY ACCESS</p><h2>Start with a signal.<br /><em>Pay for investigation.</em></h2></div><p>We are validating one service for families traveling with children and aging parents. No automatic checkout yet: scope and price are confirmed first.</p></div>
         <div className="price-grid">
-          <article><p>QUICK SCAN</p><h3>Free</h3><span>Fast AI-assisted overview</span><ul><li>Overall fit snapshot</li><li>Top three friction flags</li><li>Visible confidence labels</li></ul><Link className="price-link" href="/check">Check a trip <ArrowRight size={16} /></Link></article>
-          <article><p>DETAILED REPORT</p><h3>$29</h3><span>Complete Trip Fit analysis</span><ul><li>Day-by-day energy curve</li><li>Walking and transfer analysis</li><li>Practical corrections</li><li>Shareable family report</li></ul><Link className="price-link" href="/check">Start free <ArrowRight size={16} /></Link></article>
-          <article className="featured-price"><div className="popular">MOST CONFIDENCE</div><p>HUMAN REVIEWED</p><h3>From $89</h3><span>Critical details verified for you</span><ul><li>Everything in Detailed</li><li>Hotel and attraction checks</li><li>Named specialist reviewer</li><li>Verification notes and sources</li></ul><Link className="button" href="/check">Start your report <ArrowRight size={16} /></Link></article>
+          <article><p>FAMILY TRIP SCAN</p><h3>Free</h3><span>Immediate planning signal</span><ul><li>Top three family-friction flags</li><li>Profile-based versus estimated findings</li><li>Visible unknowns to verify</li></ul><Link className="price-link" href="/check">Check a family trip <ArrowRight size={16} /></Link></article>
+          <article className="featured-price"><div className="popular">FOUNDING OFFER</div><p>HUMAN TRIP REVIEW</p><h3>$119</h3><span>Proposed founding-family price</span><ul><li>Complete itinerary review</li><li>Walking, pacing, and transfer analysis</li><li>Priority access questions investigated</li><li>Practical itinerary corrections</li></ul><Link className="button" href="/check">Join the founding list <ArrowRight size={16} /></Link></article>
         </div>
-        <p className="price-note">Need us to rebuild the difficult parts? Concierge correction packages start at $249.</p>
+        <p className="price-note">Early concept pricing, not a guarantee of availability. You will see the exact scope and price before any payment.</p>
       </section>
 
       <section className="cta shell">
