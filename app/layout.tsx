@@ -16,12 +16,12 @@ const serif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://vafaro.com"),
+  metadataBase: new URL("https://www.vafaro.com"),
   title: { default: "Vafaro — Multigenerational Family Itinerary Review", template: "%s | Vafaro" },
   description:
     "Stress-test a family travel itinerary for walking, stairs, pacing, transfers, recovery, and hidden friction before you book.",
   keywords: ["multigenerational family travel", "multigenerational trip planner", "traveling with aging parents", "senior friendly family vacations", "family travel itinerary", "family trip planner", "accessible family travel"],
-  openGraph: { title: "Vafaro — Know before you go", description: "Upload any itinerary. See whether the trip actually fits the people taking it.", url: "https://vafaro.com", siteName: "Vafaro", type: "website" },
+  openGraph: { title: "Vafaro — Know before you go", description: "Upload any itinerary. See whether the trip actually fits the people taking it.", siteName: "Vafaro", type: "website" },
   twitter: { card: "summary_large_image", title: "Vafaro — Trip Fit Reports", description: "Beautiful plans. Real-world checked." },
   robots: { index: true, follow: true },
 };

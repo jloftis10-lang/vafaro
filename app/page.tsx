@@ -24,7 +24,7 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
 export default function Home() {
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context":"https://schema.org", "@type":"Service", name:"Vafaro Family Trip Fit Review", provider:{"@type":"Organization",name:"Vafaro",url:"https://vafaro.com"}, audience:{"@type":"Audience",audienceType:"Families planning multigenerational travel"}, description:"AI-assisted itinerary screening and optional human review for multigenerational family trips with children and aging parents.", areaServed:"Worldwide", offers:[{"@type":"Offer",name:"Family Trip Quick Scan",price:"0",priceCurrency:"USD"}] }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context":"https://schema.org", "@type":"Service", name:"Vafaro Family Trip Fit Review", provider:{"@type":"Organization",name:"Vafaro",url:"https://www.vafaro.com"}, audience:{"@type":"Audience",audienceType:"Families planning multigenerational travel"}, description:"AI-assisted itinerary screening and optional human review for multigenerational family trips with children and aging parents.", areaServed:"Worldwide", offers:[{"@type":"Offer",name:"Family Trip Quick Scan",price:"0",priceCurrency:"USD"}] }) }} />
       <header className="nav shell">
         <Link className="brand" href="/" aria-label="Vafaro home">
           <span className="brand-mark"><Compass size={20} weight="fill" /></span>
