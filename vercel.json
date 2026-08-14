@@ -5,10 +5,10 @@
   "cleanUrls": true,
   "functions": {
     "api/leads.ts": {
-      "maxDuration": 10
+      "maxDuration": 20
     },
     "api/contact.ts": {
-      "maxDuration": 10
+      "maxDuration": 20
     }
   }
 }

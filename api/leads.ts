@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import { sendReviewApplicationNotification } from "../lib/reviewer-notification.js";
 
 type LeadRequest = {
   name?: unknown;
@@ -19,6 +20,7 @@ type LeadRequest = {
       walkingHours?: unknown;
       pace?: unknown;
       description?: unknown;
+      excursion?: unknown;
     };
   };
 };
@@ -26,6 +28,7 @@ type LeadRequest = {
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const allowedTimeframes = new Set(["Just exploring", "Within 3 months", "3–6 months", "6–12 months", "Trip already booked"]);
 const allowedPrices = new Set([79, 119, 149]);
+const allowedTenders = new Set(["Yes", "No", "Unknown"]);
 
 function cleanText(value: unknown, maxLength: number) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
@@ -34,6 +37,37 @@ function cleanText(value: unknown, maxLength: number) {
 function cleanList(value: unknown, maxItems = 12) {
   if (!Array.isArray(value)) return [];
   return value.slice(0, maxItems).map(item => cleanText(item, 80)).filter(Boolean);
+}
+
+function cleanExcursion(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const source = value as Record<string, unknown>;
+  const durationHours = Number(source.durationHours);
+  const standingMinutes = Number(source.standingMinutes);
+  const tender = cleanText(source.tender, 20);
+  const listingUrl = cleanText(source.listingUrl, 1000);
+  const excursion = {
+    cruiseLine: cleanText(source.cruiseLine, 100),
+    ship: cleanText(source.ship, 100),
+    sailingDate: cleanText(source.sailingDate, 20),
+    port: cleanText(source.port, 120),
+    excursionName: cleanText(source.excursionName, 180),
+    provider: cleanText(source.provider, 80),
+    listingUrl,
+    activityLevel: cleanText(source.activityLevel, 40),
+    durationHours,
+    tender,
+    travelerRelation: cleanText(source.travelerRelation, 80),
+    standingMinutes,
+    stairsTolerance: cleanText(source.stairsTolerance, 80),
+    mobilityAid: cleanText(source.mobilityAid, 80),
+  };
+  if (!excursion.cruiseLine || !excursion.ship || !excursion.port || !excursion.excursionName) return undefined;
+  if (!Number.isFinite(durationHours) || durationHours < 1 || durationHours > 24) return undefined;
+  if (!Number.isFinite(standingMinutes) || standingMinutes < 1 || standingMinutes > 240) return undefined;
+  if (!allowedTenders.has(tender)) return undefined;
+  try { if (new URL(listingUrl).protocol !== "https:") return undefined; } catch { return undefined; }
+  return excursion;
 }
 
 async function hashIp(value: string) {
@@ -90,6 +124,7 @@ const leadHandler = {
     const pace = Number(body.report?.input?.pace);
     const score = Number(body.report?.score);
     const sourceUrl = cleanText(body.sourceUrl, 500);
+    const excursion = cleanExcursion(body.report?.input?.excursion);
 
     if (!name || !emailPattern.test(email) || body.consent !== true || !reportId || !tripDescription) {
       return Response.json({ error: "Please complete every required field and agree to be contacted." }, { status: 400 });
@@ -134,6 +169,9 @@ const leadHandler = {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS founding_family_leads_ip_created_idx ON founding_family_leads (ip_hash, created_at DESC)`;
+      await sql`ALTER TABLE founding_family_leads ADD COLUMN IF NOT EXISTS excursion JSONB`;
+      await sql`ALTER TABLE founding_family_leads ADD COLUMN IF NOT EXISTS notification_status TEXT NOT NULL DEFAULT 'pending'`;
+      await sql`ALTER TABLE founding_family_leads ADD COLUMN IF NOT EXISTS notification_sent_at TIMESTAMPTZ`;
 
       const [rate] = await sql`SELECT COUNT(*)::int AS count FROM founding_family_leads WHERE ip_hash = ${ipHash} AND created_at > NOW() - INTERVAL '1 hour'`;
       if (Number(rate?.count ?? 0) >= 5) return Response.json({ error: "Too many submissions. Please try again later." }, { status: 429 });
@@ -142,17 +180,18 @@ const leadHandler = {
         INSERT INTO founding_family_leads (
           name, email, timeframe, price_interest, report_id, report_title,
           planning_signal, report_summary, trip_description, companions, needs,
-          walking_hours, pace, source_url, ip_hash, user_agent
+          walking_hours, pace, source_url, ip_hash, user_agent, excursion
         ) VALUES (
           ${name}, ${email}, ${timeframe}, ${priceInterest}, ${reportId}, ${reportTitle},
           ${Math.round(score)}, ${reportSummary}, ${tripDescription}, ${JSON.stringify(companions)}::jsonb,
           ${JSON.stringify(needs)}::jsonb, ${Math.round(walkingHours)}, ${Math.round(pace)},
-          ${sourceUrl}, ${ipHash}, ${userAgent}
+          ${sourceUrl}, ${ipHash}, ${userAgent}, ${excursion ? JSON.stringify(excursion) : null}::jsonb
         )
         ON CONFLICT (email, report_id) DO UPDATE SET
           name = EXCLUDED.name,
           timeframe = EXCLUDED.timeframe,
           price_interest = EXCLUDED.price_interest,
+          excursion = EXCLUDED.excursion,
           updated_at = NOW()
         RETURNING id
       `;
@@ -163,7 +202,9 @@ const leadHandler = {
         return Response.json({ ok: true, test: true }, { status: 201 });
       }
 
-      console.log(JSON.stringify({ level: "info", message: "Lead saved", route: "/api/leads", requestId, durationMs: Date.now() - startedAt }));
+      const notification = await sendReviewApplicationNotification({ leadId: String(lead.id), name, email, timeframe, priceInterest, reportTitle, score, tripDescription, companions, needs, walkingHours, pace, excursion });
+      await sql`UPDATE founding_family_leads SET notification_status = ${notification.status}, notification_sent_at = ${notification.status === "sent" ? new Date().toISOString() : null} WHERE id = ${lead.id}`;
+      console.log(JSON.stringify({ level: notification.status === "failed" ? "warning" : "info", message: "Lead saved", route: "/api/leads", requestId, notificationStatus: notification.status, notificationError: notification.error, durationMs: Date.now() - startedAt }));
       return Response.json({ ok: true, leadId: String(lead.id) }, { status: 201 });
     } catch (error) {
       console.error(JSON.stringify({ level: "error", message: "Lead submission failed", route: "/api/leads", requestId, error: error instanceof Error ? error.message : "Unknown database error", durationMs: Date.now() - startedAt }));

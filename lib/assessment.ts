@@ -1,9 +1,28 @@
+export type ExcursionInput = {
+  cruiseLine: string;
+  ship: string;
+  sailingDate: string;
+  port: string;
+  excursionName: string;
+  provider: string;
+  listingUrl: string;
+  activityLevel: string;
+  durationHours: number;
+  tender: "Yes" | "No" | "Unknown";
+  travelerRelation: string;
+  standingMinutes: number;
+  stairsTolerance: string;
+  mobilityAid: string;
+};
+
 export type TripInput = {
   companions: string[];
   needs: string[];
   walkingHours: number;
   pace: number;
   description: string;
+  kind?: "trip" | "shore-excursion";
+  excursion?: ExcursionInput;
 };
 
 export type Finding = {
@@ -34,7 +53,8 @@ export type TripReport = {
 
 export function generateReport(input: TripInput): TripReport {
   const text = input.description.toLowerCase();
-  const isShoreExcursion = /\b(cruise|shore excursion|excursion|port day|tender)\b/.test(text);
+  const excursion = input.excursion;
+  const isShoreExcursion = input.kind === "shore-excursion" || Boolean(excursion) || /\b(cruise|shore excursion|excursion|port day|tender)\b/.test(text);
   const findings: Finding[] = [];
   let score = 92;
 
@@ -46,9 +66,25 @@ export function generateReport(input: TripInput): TripReport {
     score -= 6;
     findings.push({ level:"check", title:"The activity label needs real-world detail", detail:"Easy, moderate, and demanding labels are broad. Total duration can hide motorcoach steps, long standing periods, guide pace, uneven surfaces, and the walk between the ship and transportation.", action:"Confirm walking and standing minutes, terrain, steps, seating, vehicle boarding, and mobility-aid rules for this exact excursion.", confidence:"Official source needed" });
   }
-  if (text.includes("tender")) {
+  if (excursion?.tender === "Yes" || (!excursion && text.includes("tender"))) {
     score -= 9;
     findings.push({ level:"check", title:"Tendering adds a separate transfer", detail:"A tender port can require queues, steps between moving vessels, and additional standing before the excursion begins. Operation may vary with ship, weather, sea conditions, and local procedures.", action:"Confirm the ship-specific tender process and count it as part of the day’s physical load.", confidence:"Official source needed" });
+  }
+  if (excursion?.tender === "Unknown") {
+    score -= 5;
+    findings.push({ level:"check", title:"Ship-to-shore transfer is still unknown", detail:"The same port can use a pier on one sailing and tender boats on another. That changes queues, steps, balance demands, and the time available ashore.", action:"Confirm the arrival method for this ship and sailing before treating the excursion as a fit.", confidence:"Official source needed" });
+  }
+  if (excursion && excursion.standingMinutes <= 30) {
+    score -= 7;
+    findings.push({ level:"check", title:"Seating and standing time are decision-critical", detail:`The traveler is comfortable standing for about ${excursion.standingMinutes} minutes at a time. Check-in, transportation queues, guided explanations, and tender waits can exceed the walking shown in a listing.`, action:"Ask the operator for the longest expected standing interval and where seating is reliably available.", confidence:"Based on your profile" });
+  }
+  if (excursion && excursion.stairsTolerance === "Avoid stairs") {
+    score -= 7;
+    findings.push({ level:"check", title:"Every boarding step needs confirmation", detail:"Avoiding stairs requires more than a general accessibility label. Gangways, tender boats, motorcoaches, venues, and bathrooms may each introduce steps.", action:"Confirm the complete route from ship to excursion and back, including vehicle entry and alternate routes.", confidence:"Official source needed" });
+  }
+  if (excursion && excursion.mobilityAid !== "None") {
+    score -= 5;
+    findings.push({ level:"check", title:"Mobility-aid handling rules may change the fit", detail:`The profile includes a ${excursion.mobilityAid.toLowerCase()}. Storage, weight limits, tender policies, vehicle space, and guide pace vary by ship and operator.`, action:"Get written confirmation that the exact mobility aid can be accommodated throughout this excursion.", confidence:"Official source needed" });
   }
   if (input.needs.includes("Step-free access")) {
     score -= 9;
@@ -87,7 +123,7 @@ export function generateReport(input: TripInput): TripReport {
 
   return {
     id: `vf-${Date.now().toString(36)}`,
-    title: place ? `${place} trip check` : "Your Trip Fit check",
+    title: excursion?.excursionName ? `${excursion.excursionName} fit check` : place ? `${place} trip check` : "Your Trip Fit check",
     score: safeScore,
     summary: safeScore >= 80 ? "A strong fit with a few details to verify." : safeScore >= 65 ? "A promising trip with friction worth correcting." : "This trip needs adjustment before you commit.",
     createdAt: new Date().toISOString(), input, findings, unknowns, confidence,

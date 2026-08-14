@@ -88,6 +88,7 @@ export function ResultsClient() {
       <aside><p>PROFILE CHECKED</p>{report.input.companions.map(item => <span key={item}>✓ {item}</span>)}{report.input.needs.map(item => <span key={item}>✓ {item}</span>)}</aside>
       <div className="result-main">
         <section className="result-disclaimer"><Info size={20} weight="fill" /><p><strong>This is a planning signal, not a safety or accessibility certification.</strong> It is based on your answers and general heuristics. Conditions and provider details must be confirmed directly before booking.</p></section>
+        {report.input.excursion ? <section className="excursion-result-summary"><p className="section-kicker">EXACT EXCURSION CHECKED</p><h2>{report.input.excursion.excursionName}</h2><dl><div><dt>Sailing</dt><dd>{report.input.excursion.cruiseLine} · {report.input.excursion.ship} · {report.input.excursion.sailingDate}</dd></div><div><dt>Port</dt><dd>{report.input.excursion.port} · Tender: {report.input.excursion.tender}</dd></div><div><dt>Listing</dt><dd><a href={report.input.excursion.listingUrl} target="_blank" rel="noreferrer">Open the exact listing</a></dd></div><div><dt>Traveler limits</dt><dd>{report.input.walkingHours} walking hours · {report.input.excursion.standingMinutes} standing minutes · {report.input.excursion.stairsTolerance}</dd></div></dl></section> : null}
         <p className="section-kicker">WHAT TO KNOW BEFORE YOU BOOK</p>
         {report.findings.slice(0, 3).map((finding, index) => {
           const Icon = icons[finding.level];

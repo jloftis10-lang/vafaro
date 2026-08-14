@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import { sendContactNotification } from "../lib/reviewer-notification.js";
 
 type ContactRequest = {
   name?: unknown;
@@ -77,6 +78,8 @@ const contactHandler = {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS contact_messages_ip_created_idx ON contact_messages (ip_hash, created_at DESC)`;
+      await sql`ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS notification_status TEXT NOT NULL DEFAULT 'pending'`;
+      await sql`ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS notification_sent_at TIMESTAMPTZ`;
       const [rate] = await sql`SELECT COUNT(*)::int AS count FROM contact_messages WHERE ip_hash = ${ipHash} AND created_at > NOW() - INTERVAL '1 hour'`;
       if (Number(rate?.count ?? 0) >= 5) return Response.json({ error: "Too many submissions. Please try again later." }, { status: 429 });
 
@@ -92,7 +95,9 @@ const contactHandler = {
         return Response.json({ ok: true, test: true }, { status: 201 });
       }
 
-      console.log(JSON.stringify({ level: "info", message: "Contact message saved", route: "/api/contact", requestId, durationMs: Date.now() - startedAt }));
+      const notification = await sendContactNotification({ contactId: String(contact.id), name, email, topic, message });
+      await sql`UPDATE contact_messages SET notification_status = ${notification.status}, notification_sent_at = ${notification.status === "sent" ? new Date().toISOString() : null} WHERE id = ${contact.id}`;
+      console.log(JSON.stringify({ level: notification.status === "failed" ? "warning" : "info", message: "Contact message saved", route: "/api/contact", requestId, notificationStatus: notification.status, notificationError: notification.error, durationMs: Date.now() - startedAt }));
       return Response.json({ ok: true, contactId: String(contact.id) }, { status: 201 });
     } catch (error) {
       console.error(JSON.stringify({ level: "error", message: "Contact submission failed", route: "/api/contact", requestId, error: error instanceof Error ? error.message : "Unknown database error", durationMs: Date.now() - startedAt }));
