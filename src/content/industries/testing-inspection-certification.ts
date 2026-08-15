@@ -1,0 +1,22 @@
+import type { IndustryGuide } from "@/content/industries/types";
+
+export const testingInspectionCertificationGuide: IndustryGuide = {
+  slug: "testing-inspection-certification",
+  industryId: "testing-inspection-certification",
+  name: "Testing, Inspection & Certification",
+  metaDescription: "Learn how testing, inspection, and certification (TIC) businesses are valued and how to prepare one for a sale.",
+  intro: "TIC businesses — accredited testing labs, inspection firms, and certification bodies — sell on the strength of their accreditation scope and the regulatory or contractual mandate that forces customers to use them. It is one of the most acquisitive categories in industrial services precisely because demand is not discretionary: customers need testing and certification to sell or operate legally, not because they chose to buy it.",
+  valuationParagraphs: [
+    "Smaller, single-location labs are commonly assessed on SDE, while multi-site or multi-scope operators are more naturally evaluated on normalized EBITDA. A buyer will scrutinize the scope and status of accreditation (ISO 17025, ISO 17065, ANAB, or sector-specific bodies), equipment calibration currency, and how much revenue depends on regulatory or contractual mandates versus discretionary testing.",
+    "OwnerGauge applies a reviewed testing-inspection-certification-specific multiple range to the assessment, informed by public 2025-2026 benchmark data — TIC is a well-established premium consolidation category because regulatory-mandated demand makes revenue unusually non-discretionary and recurring.",
+  ],
+  influenceFactors: ["Breadth and status of accreditation (ISO 17025/17065 or sector-specific scope)", "Share of revenue tied to regulatory or contractual mandates versus discretionary testing", "Equipment calibration currency and capital-replacement needs", "Turnaround time, capacity utilization, and technician/scientist retention", "Customer and end-market concentration"],
+  revenueQuality: ["Revenue tied to mandated testing or certification cycles is close to the highest quality available in industrial services — customers largely cannot opt out.", "Recurring calibration and re-certification work compounds accreditation value: it keeps existing customers coming back on a schedule.", "Discretionary or R&D-driven testing work is valuable but more cyclical than mandated compliance testing."],
+  ownerDependency: ["The owner may be the named technical signatory or lab director on the accreditation, and may hold key relationships with the accrediting body and major customers.", "A buyer tests whether technical signatory authority and accreditation standing can transfer or be held by staff besides the owner."],
+  managementWorkforce: ["Accredited technicians and lab scientists are specialized and not easily replaced, and losing key certified staff can put accreditation scope itself at risk.", "Buyers look for documented quality-management systems, proficiency-testing history, and technical leadership beyond the owner."],
+  growthDrivers: ["Expand accreditation scope into adjacent testing methods or standards", "Increase the share of revenue tied to mandated, recurring compliance testing", "Document quality-management systems and technical-signatory succession", "Diversify customer and end-market concentration"],
+  buyerConsiderations: ["Accreditation scope, standing, and history of proficiency-testing results", "Technical-signatory and lab-director succession beyond the owner", "Equipment calibration status and capital-replacement needs", "Customer concentration and dependence on any single mandated program"],
+  transactionRisks: ["Accreditation scope is narrower than the customer base assumes, or has open findings", "The owner is the sole technical signatory or accreditation-body contact", "Equipment calibration has lapsed or requires near-term capital investment", "A single regulatory mandate or customer program drives an outsized share of revenue"],
+  preparationTips: ["Confirm accreditation standing, scope, and any open findings before going to market", "Document technical-signatory succession and quality-management systems", "Reconcile equipment calibration schedules and capital needs", "Diversify customer and program concentration where feasible"],
+  assessmentCta: "Estimate Your Testing, Inspection & Certification Business Value & Deal Readiness",
+};

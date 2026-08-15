@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #f7f5f0;
+  --color-surface: #ffffff;
+  --color-ink: #1b2733;
+  --color-muted: #5b6b76;
+  --color-muted-soft: #8996a0;
+  --color-line: #e1ded4;
+  /* OwnerGauge brand navy/blue, sampled directly from the final logo art
+     (src/assets/brand/) rather than the brief's approximate suggested hex.
+     --color-accent is darkened ~10% from the raw sampled blue (#006bfe) so
+     small uppercase eyebrow labels (text-accent, used ~30 places) clear
+     WCAG AA's 4.5:1 body-text contrast against --color-canvas (4.25:1 at
+     the raw sample vs 5.08:1 here) -- same pattern as the muted-soft/accent
+     darkening already documented for the old palette; don't lighten this
+     back toward the raw sampled blue without rechecking contrast. */
+  --color-primary: #031b3f;
+  --color-primary-dark: #011128;
+  --color-accent: #0060e4;
+  --color-accent-soft: #eaf2fc;
+  --font-display: var(--font-source-serif);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+}
